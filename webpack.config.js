@@ -14,6 +14,15 @@ module.exports = ['source-map'].map(devtool => ({
     library: 'server',
     libraryTarget: 'umd',
   },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?|\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+      },
+    ],
+  },
   devtool,
   optimization: {
     runtimeChunk: true,
