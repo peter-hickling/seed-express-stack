@@ -37,11 +37,5 @@ module.exports = ['source-map'].map(devtool => ({
       amd: 'passport',
       root: '_',
     },
-    boom: {
-      commonjs: 'boom',
-      commonjs2: 'boom',
-      amd: 'boom',
-      root: '_',
-    },
   },
 }))
