@@ -2,7 +2,7 @@ import cookieSession from 'cookie-session'
 
 // TODO: Set keygrip up for the keys. Also consider increasing the session length to 3 days.
 //  https://github.com/expressjs/cookie-session#using-a-custom-signature-algorithm
-const cookieSessionConfig = (clientUrl: string) => cookieSession({
+const cookieSessionConfig = (httpsEnabled: boolean) => cookieSession({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // One day in milliseconds
   },
@@ -11,7 +11,9 @@ const cookieSessionConfig = (clientUrl: string) => cookieSession({
     'this-should-be-changed-for-production-version',
     'another-very-secure-key-that-should-be-changed',
   ],
-  secure: !clientUrl.includes('localhost'),
+  // Cookie will only be sent over HTTPS
+  secure: httpsEnabled,
+  // Cookie will be send with JS request as well as HTTP ones
   httpOnly: false,
 })
 

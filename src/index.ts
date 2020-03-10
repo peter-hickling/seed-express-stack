@@ -12,24 +12,24 @@ import { cookieSessionConfig, refreshSessionOnAllRequests } from 'sessions'
 
 type Props = {
   port: number,
-  publicRoutes: Array<any>,
-  protectedRoutes: Array<any>,
-  passportStrategies: Array<any>,
+  routers: Array<any>,
   clientUrl: string,
-  deserializeUser: (id, done) => void,
-  serializeUser: (user, done) => void,
-  authenticateUser: (req, res, next) => void,
+  passportConfig?: {
+    passportStrategies: Array<any>,
+    deserializeUser: (id, done) => void,
+    serializeUser: (user, done) => void,
+  },
+  httpsEnabled?: boolean,
+  trustProxies?: boolean,
 }
 
 export const setupMicroService = ({
   port,
-  publicRoutes,
-  protectedRoutes,
-  passportStrategies,
+  routers,
   clientUrl,
-  deserializeUser,
-  serializeUser,
-  authenticateUser,
+  passportConfig,
+  trustProxies = false,
+  httpsEnabled = false,
 }: Props) => {
   app.listen(port, error => {
     if (error) {
@@ -40,41 +40,38 @@ export const setupMicroService = ({
     }
   })
 
-  if (!clientUrl.includes('localhost')) {
-    app.set('trust proxy', 1)
+  if (trustProxies) {
+    app.enable('trust proxy')
   }
 
-  const corsOptions = { origin: clientUrl, credentials: true }
-  app.use(cookieSessionConfig)
+  const corsOptions = { origin: clientUrl, credentials: !!passportConfig }
+  app.use(cookieSessionConfig(httpsEnabled))
   app.use(helmet())
   app.use(compression())
   app.use(cors(corsOptions))
   app.use(bodyParser.json())
-  app.use(passport.initialize())
-  app.use(passport.session())
+  if (passportConfig) {
+    app.use(passport.initialize())
+    app.use(passport.session())
+  }
   app.use(httpContext.middleware)
   app.use(setRequestContext)
   app.use(initialRequestLog)
   app.use(refreshSessionOnAllRequests)
-  publicRoutes.forEach(router => {
+  routers.forEach(router => {
     app.use(router)
   })
-
-  // All routes below here will authenticate the user by default. Any router that doesn't require default authentication
-  // should be above here
-  app.use(authenticateUser)
-
-  protectedRoutes.forEach(router => {
-    app.use(router)
-  })
-
   app.use(notFoundHandler)
   app.use(errorHandler)
 
-  passportStrategies.forEach(strategy => passport.use(strategy))
-
-  passport.deserializeUser(deserializeUser)
-  passport.serializeUser(serializeUser)
+  if (passportConfig) {
+    passportConfig.passportStrategies.forEach(strategy =>
+      passport.use(strategy),
+    )
+    passport.deserializeUser(passportConfig.deserializeUser)
+    passport.serializeUser(passportConfig.serializeUser)
+  }
 }
 
 export { internalErrorWrapper } from 'errors'
+export { logger } from 'logger'
