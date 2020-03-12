@@ -19,7 +19,7 @@ type Props = {
     deserializeUser: (id, done) => void,
     serializeUser: (user, done) => void,
   },
-  httpsEnabled?: boolean,
+  sessionConfig: { keys: Array<string>, name: string, secure: boolean },
   trustProxies?: boolean,
 }
 
@@ -29,7 +29,7 @@ export const setupMicroService = ({
   clientUrl,
   passportConfig,
   trustProxies = false,
-  httpsEnabled = false,
+  sessionConfig,
 }: Props) => {
   app.listen(port, error => {
     if (error) {
@@ -45,7 +45,7 @@ export const setupMicroService = ({
   }
 
   const corsOptions = { origin: clientUrl, credentials: !!passportConfig }
-  app.use(cookieSessionConfig(httpsEnabled))
+  app.use(cookieSessionConfig(sessionConfig))
   app.use(helmet())
   app.use(compression())
   app.use(cors(corsOptions))
