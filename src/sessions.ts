@@ -1,20 +1,25 @@
 import cookieSession from 'cookie-session'
 
+export type SessionConfig = {
+  secure: boolean,
+  name: string,
+  domain?: string,
+  keys: Array<string>,
+}
+
 export const cookieSessionConfig = ({
   secure,
   name,
   keys,
-}: {
-  secure: boolean,
-  name: string,
-  keys: Array<string>,
-}) =>
+  domain,
+}: SessionConfig) =>
   cookieSession({
     cookie: {
       maxAge: 24 * 60 * 60 * 1000, // One day in milliseconds
     },
     name,
     keys,
+    domain,
     // Cookie will only be sent over HTTPS
     secure,
     // Cookie will be send with JS request as well as HTTP ones

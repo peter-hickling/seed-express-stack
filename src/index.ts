@@ -8,7 +8,11 @@ import cors from 'cors'
 import { app } from 'app'
 import { errorHandler, notFoundHandler } from 'errors'
 import { initialRequestLog, logger, setRequestContext } from 'logger'
-import { cookieSessionConfig, refreshSessionOnAllRequests } from 'sessions'
+import {
+  cookieSessionConfig,
+  refreshSessionOnAllRequests,
+  SessionConfig,
+} from 'sessions'
 
 type Props = {
   port: number,
@@ -19,7 +23,7 @@ type Props = {
     deserializeUser: (id, done) => void,
     serializeUser: (user, done) => void,
   },
-  sessionConfig: { keys: Array<string>, name: string, secure: boolean },
+  sessionConfig: SessionConfig,
   trustProxies?: boolean,
 }
 
