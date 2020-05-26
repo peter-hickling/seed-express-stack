@@ -25,6 +25,7 @@ type Props = {
   },
   sessionConfig: SessionConfig,
   trustProxies?: boolean,
+  noCors: boolean,
 }
 
 export const setupMicroService = ({
@@ -34,6 +35,7 @@ export const setupMicroService = ({
   passportConfig,
   trustProxies = false,
   sessionConfig,
+  noCors = false,
 }: Props) => {
   app.listen(port, error => {
     if (error) {
@@ -52,7 +54,9 @@ export const setupMicroService = ({
   app.use(cookieSessionConfig(sessionConfig))
   app.use(helmet())
   app.use(compression())
-  app.use(cors(corsOptions))
+  if (noCors) {
+    app.use(cors(corsOptions))
+  }
   app.use(bodyParser.json())
   if (passportConfig) {
     app.use(passport.initialize())
