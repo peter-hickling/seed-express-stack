@@ -54,7 +54,7 @@ export const setupMicroService = ({
   app.use(cookieSessionConfig(sessionConfig))
   app.use(helmet())
   app.use(compression())
-  if (noCors) {
+  if (!noCors) {
     app.use(cors(corsOptions))
   }
   app.use(bodyParser.json())
