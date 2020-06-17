@@ -35,7 +35,7 @@ export const setRequestContext = (req, res, next) => {
 
 export const initialRequestLog = (req, res, next) => {
   logger.info(
-    `Endpoint=${req.originalUrl} User=${req.user?.userId || 'unknown'}`,
+    `Endpoint=${req.originalUrl} User=${req.user?.logId || 'unknown'}`,
   )
   next()
 }
