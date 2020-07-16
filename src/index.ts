@@ -19,7 +19,7 @@ type Props = {
   routers: Array<any>,
   clientUrl: string,
   passportConfig?: {
-    passportStrategies: Array<any>,
+    passportStrategies: Array<{ strategy: any, name: string }>,
     deserializeUser: (id, done) => void,
     serializeUser: (user, done) => void,
   },
@@ -73,8 +73,8 @@ export const setupMicroService = ({
   app.use(errorHandler)
 
   if (passportConfig) {
-    passportConfig.passportStrategies.forEach(strategy =>
-      passport.use(strategy),
+    passportConfig.passportStrategies.forEach(({ name, strategy }) =>
+      passport.use(name, strategy),
     )
     passport.deserializeUser(passportConfig.deserializeUser)
     passport.serializeUser(passportConfig.serializeUser)
