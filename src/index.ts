@@ -17,6 +17,7 @@ import {
 type Props = {
   port: number,
   routers: Array<any>,
+  noBodyParserRouters: Array<any>,
   clientUrl: string,
   passportConfig?: {
     passportStrategies: Array<{ strategy: any, name: string }>,
@@ -31,6 +32,7 @@ type Props = {
 export const setupMicroService = ({
   port,
   routers,
+  noBodyParserRouters,
   clientUrl,
   passportConfig,
   trustProxies = false,
@@ -57,16 +59,8 @@ export const setupMicroService = ({
   if (!noCors) {
     app.use(cors(corsOptions))
   }
-  app.use((req, res, next) => {
-    // @ts-ignore
-    req.rawBody = new Promise(resolve => {
-      let buf = '';
-      req.on('data', x => buf += x);
-      req.on('end', () => {
-        resolve(buf);
-      });
-    });
-    next();
+  noBodyParserRouters.forEach(router => {
+    app.use(router)
   })
   app.use(bodyParser.json())
   if (passportConfig) {
