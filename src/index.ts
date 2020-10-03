@@ -57,6 +57,17 @@ export const setupMicroService = ({
   if (!noCors) {
     app.use(cors(corsOptions))
   }
+  app.use(function(req, res, next) {
+    var data = ''
+    req.on('data', function(chunk) {
+      data += chunk
+    })
+    req.on('end', function() {
+      // @ts-ignore
+      req.rawBody = data
+      next()
+    })
+  })
   app.use(bodyParser.json())
   if (passportConfig) {
     app.use(passport.initialize())
