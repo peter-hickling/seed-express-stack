@@ -33,12 +33,12 @@ export const setRequestContext = (req, res, next) => {
   next()
 }
 
-export const createInitialRequestLog = whitelistEndpoints => (
+export const createInitialRequestLog = noLogRoutes => (
   req,
   res,
   next,
 ) => {
-  if (!whitelistEndpoints.includes(req.originalUrl)) {
+  if (!noLogRoutes.includes(req.originalUrl)) {
     logger.info(
       `Endpoint=${req.originalUrl} User=${req.user?.logId || 'unknown'}`,
     )

@@ -17,7 +17,7 @@ import {
 type Props = {
   port: number,
   routers: Array<any>,
-  logWhitelistRoutes?: Array<string>,
+  noLogRoutes?: Array<string>,
   noBodyParserRouters: Array<any>,
   clientUrl: string,
   passportConfig?: {
@@ -34,7 +34,7 @@ export const setupMicroService = ({
   port,
   routers,
   noBodyParserRouters,
-  logWhitelistRoutes = [],
+  noLogRoutes = [],
   clientUrl,
   passportConfig,
   trustProxies = false,
@@ -71,7 +71,7 @@ export const setupMicroService = ({
   }
   app.use(httpContext.middleware)
   app.use(setRequestContext)
-  app.use(createInitialRequestLog(logWhitelistRoutes))
+  app.use(createInitialRequestLog(noLogRoutes))
   app.use(refreshSessionOnAllRequests)
   routers.forEach(router => {
     app.use(router)
