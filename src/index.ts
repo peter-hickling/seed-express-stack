@@ -7,7 +7,7 @@ import cors from 'cors'
 
 import { app } from 'app'
 import { errorHandler, notFoundHandler } from 'errors'
-import { initialRequestLog, logger, setRequestContext } from 'logger'
+import { createInitialRequestLog, logger, setRequestContext } from 'logger'
 import {
   cookieSessionConfig,
   refreshSessionOnAllRequests,
@@ -17,6 +17,7 @@ import {
 type Props = {
   port: number,
   routers: Array<any>,
+  logWhitelistRoutes?: Array<string>,
   noBodyParserRouters: Array<any>,
   clientUrl: string,
   passportConfig?: {
@@ -33,6 +34,7 @@ export const setupMicroService = ({
   port,
   routers,
   noBodyParserRouters,
+  logWhitelistRoutes = [],
   clientUrl,
   passportConfig,
   trustProxies = false,
@@ -69,7 +71,7 @@ export const setupMicroService = ({
   }
   app.use(httpContext.middleware)
   app.use(setRequestContext)
-  app.use(initialRequestLog)
+  app.use(createInitialRequestLog(logWhitelistRoutes))
   app.use(refreshSessionOnAllRequests)
   routers.forEach(router => {
     app.use(router)
