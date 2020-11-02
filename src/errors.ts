@@ -16,7 +16,6 @@ export const notFoundHandler = (req, res, next) => {
 export const internalErrorWrapper = func => async (req, res, next) => {
   try {
     await func(req, res, next)
-    logger.info(`success.`)
   } catch (error) {
     next(boom.internal(error))
   }
