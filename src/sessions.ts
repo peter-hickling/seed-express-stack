@@ -15,7 +15,7 @@ export const cookieSessionConfig = ({
 }: SessionConfig) =>
   cookieSession({
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // One day in milliseconds
+      maxAge: 7 * 24 * 60 * 60 * 1000, // One week
     },
     name,
     keys,
