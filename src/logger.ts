@@ -1,6 +1,7 @@
 import { createLogger, format, transports } from 'winston'
 import httpContext from 'express-http-context'
 import uniqid from 'uniqid'
+import { match } from 'path-to-regexp'
 
 const errorStackTraceFormat = format(info => {
   if (info instanceof Error) {
@@ -33,15 +34,16 @@ export const setRequestContext = (req, res, next) => {
   next()
 }
 
-export const createInitialRequestLog = noLogRoutes => (
-  req,
-  res,
-  next,
-) => {
-  if (!noLogRoutes.includes(req.originalUrl)) {
-    logger.info(
-      `Endpoint=${req.originalUrl} User=${req.user?.logId || 'unknown'}`,
-    )
+export const createInitialRequestLog = noLogRoutes => {
+  const matchers = noLogRoutes.map(val =>
+    match(val, { decode: decodeURIComponent }),
+  )
+  return (req, res, next) => {
+    if (!matchers.some(matcher => matcher(req.originalUrl))) {
+      logger.info(
+        `Endpoint=${req.originalUrl} User=${req.user?.logId || 'unknown'}`,
+      )
+    }
+    next()
   }
-  next()
 }
