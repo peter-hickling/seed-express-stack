@@ -27,7 +27,7 @@ type Props = {
   },
   sessionConfig: SessionConfig,
   trustProxies?: boolean,
-  noCors: boolean,
+  corsConfig?: { noCors?: boolean, origin: Array<any>, credentials?: boolean },
 }
 
 export const setupMicroService = ({
@@ -39,7 +39,7 @@ export const setupMicroService = ({
   passportConfig,
   trustProxies = false,
   sessionConfig,
-  noCors = false,
+  corsConfig,
 }: Props) => {
   app.listen(port, error => {
     if (error) {
@@ -54,12 +54,16 @@ export const setupMicroService = ({
     app.enable('trust proxy')
   }
 
-  const corsOptions = { origin: clientUrl, credentials: !!passportConfig }
+  const corsWithDefault = corsConfig || {
+    origin: clientUrl,
+    credentials: !!passportConfig,
+    noCors: false,
+  }
   app.use(cookieSessionConfig(sessionConfig))
   app.use(helmet())
   app.use(compression())
-  if (!noCors) {
-    app.use(cors(corsOptions))
+  if (!corsWithDefault.noCors) {
+    app.use(cors(corsWithDefault))
   }
   noBodyParserRouters.forEach(router => {
     app.use(router)
