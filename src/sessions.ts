@@ -24,6 +24,7 @@ export const cookieSessionConfig = ({
     secure,
     // Cookie will be send with JS request as well as HTTP ones
     httpOnly: false,
+    sameSite: 'lax',
   })
 
 export const refreshSessionOnAllRequests = (req, res, next) => {
