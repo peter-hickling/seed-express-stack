@@ -1,6 +1,6 @@
 {
   "name": "seed-express-stack",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Seed for express server.",
   "main": "dist/index.js",
   "scripts": {
