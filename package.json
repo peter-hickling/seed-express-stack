@@ -1,6 +1,6 @@
 {
   "name": "seed-express-stack",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Seed for express server.",
   "main": "dist/index.js",
   "scripts": {
@@ -40,7 +40,7 @@
     "cors": "^2.8.5",
     "express-http-context": "^1.2.3",
     "express-ws": "^4.0.0",
-    "helmet": "^3.21.3",
+    "helmet": "^4",
     "path-to-regexp": "^6.2.0",
     "uniqid": "^5.2.0",
     "winston": "^3.2.1"
