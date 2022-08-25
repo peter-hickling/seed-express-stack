@@ -41,7 +41,7 @@ export const createInitialRequestLog = noLogRoutes => {
   return (req, res, next) => {
     if (!matchers.some(matcher => matcher(req.originalUrl))) {
       logger.info(
-        `Endpoint=${req.originalUrl} User=${req.user?.logId || 'unknown'}`,
+        `Endpoint=${req.method} ${req.originalUrl} User=${req.user?.logId || 'unknown'}`,
       )
     }
     next()
